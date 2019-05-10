@@ -257,19 +257,19 @@ def build_data_train(im,patches_comp,step,h):
 
 #We use a model (lasso in our case) to predict the value of missing mixels of an image
 def reconstruct_im(model,img, h):
-    result=img.copy()
-    for i in range(h//2, len(result) - h//2):
-        for j in range(h//2, len(result[i]) - h//2):
-            if result[i][j][0]==253 and result[i][j][1]==253 and result[i][j][2]==253:
-                patch=patchToVector(get_patch(i, j, h,result))
-                index = np.argwhere(np.equal(patch, 253))[0:3]
+    new_img=img.copy()
+    lh=h//2
+    for i in range(lh,len(new_img)-lh):
+        for j in range(lh,len(new_img[i])-lh):
+            if new_img[i][j][0]==253 and new_img[i][j][1]==253 and new_img[i][j][2]==253:
+                patch=patchToVector(get_patch(i,j,h,new_img))
+                index = np.argwhere(np.equal(patch,253))[0:3]
                 patch = np.delete(patch, index)
-                result[i][j] = model.predict([patch])[0]
-    return result
+                new_img[i][j] = model.predict([patch])[0]
+    return new_img
 
 #From an image im, a pixel at i,j, this function calculate the frame surronding the pixel at i,j with height=wight=h
 def get_Frame(i, j, h, im):
-
     N,M,_=im.shape
     a=0
     b=0
